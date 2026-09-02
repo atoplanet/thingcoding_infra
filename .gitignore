@@ -1,0 +1,10 @@
+.env
+nginx/runtime/
+certbot/conf/
+certbot/www/
+wallet/
+Wallet_*/
+*.sso
+*.p12
+*.pem
+*.jks

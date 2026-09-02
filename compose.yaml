@@ -1,0 +1,88 @@
+services:
+  main:
+    container_name: main
+    build:
+      context: ../thingcoding_main
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Seoul
+      SERVER_PORT: "8080"
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_MAIN_WEB_APPLICATION_TYPE: servlet
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      WALLET_DIR: /app/wallet
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@${ORACLE_SERVICE_NAME}?TNS_ADMIN=/app/wallet
+      JAVA_TOOL_OPTIONS: ${MAIN_JAVA_OPTS:--Xms128m -Xmx256m -XX:+UseSerialGC}
+    volumes:
+      - ${WALLET_PATH:-/home/opc/work/wallet}:/app/wallet:ro
+      - main_compile:/compileTmp
+      - main_project_images:/thingProjectImg
+      - main_error_images:/errorReportImg
+      - main_profile_images:/profileImg
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks: [web]
+
+  admin:
+    container_name: admin
+    build:
+      context: ../thingcoding_manage
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Seoul
+      SERVER_PORT: "10000"
+      SPRING_PROFILES_ACTIVE: oracle
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      WALLET_DIR: /app/wallet
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@${ORACLE_SERVICE_NAME}?TNS_ADMIN=/app/wallet
+      JAVA_TOOL_OPTIONS: ${ADMIN_JAVA_OPTS:--Xms128m -Xmx256m -XX:+UseSerialGC}
+    volumes:
+      - ${WALLET_PATH:-/home/opc/work/wallet}:/app/wallet:ro
+      - admin_compile:/compileTmp
+      - admin_project_images:/thingProjectImg
+      - admin_error_images:/errorReportImg
+      - admin_profile_images:/profileImg
+    ports:
+      - "127.0.0.1:10000:10000"
+    networks: [web]
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx
+    restart: unless-stopped
+    depends_on: [main, admin]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/runtime/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+    networks: [web]
+    command: /bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: /bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done'
+
+networks:
+  web:
+
+volumes:
+  main_compile:
+  main_project_images:
+  main_error_images:
+  main_profile_images:
+  admin_compile:
+  admin_project_images:
+  admin_error_images:
+  admin_profile_images:
