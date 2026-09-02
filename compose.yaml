@@ -17,10 +17,10 @@ services:
       JAVA_TOOL_OPTIONS: ${MAIN_JAVA_OPTS:--Xms128m -Xmx256m -XX:+UseSerialGC}
     volumes:
       - ${WALLET_PATH:-/home/opc/work/wallet}:/app/wallet:ro
-      - main_compile:/compileTmp
-      - main_project_images:/thingProjectImg
-      - main_error_images:/errorReportImg
-      - main_profile_images:/profileImg
+      - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/compileTmp:/compileTmp
+      - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/thingProjectImg:/thingProjectImg
+      - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/errorReportImg:/errorReportImg
+      - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/profileImg:/profileImg
     ports:
       - "127.0.0.1:8080:8080"
     networks: [web]
@@ -39,13 +39,16 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       WALLET_DIR: /app/wallet
       SPRING_DATASOURCE_URL: jdbc:oracle:thin:@${ORACLE_SERVICE_NAME}?TNS_ADMIN=/app/wallet
+      JPA_DDL_AUTO: none
+      JPA_GENERATE_DDL: "false"
+      JPA_SHOW_SQL: "false"
       JAVA_TOOL_OPTIONS: ${ADMIN_JAVA_OPTS:--Xms128m -Xmx256m -XX:+UseSerialGC}
     volumes:
       - ${WALLET_PATH:-/home/opc/work/wallet}:/app/wallet:ro
-      - admin_compile:/compileTmp
-      - admin_project_images:/thingProjectImg
-      - admin_error_images:/errorReportImg
-      - admin_profile_images:/profileImg
+      - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/compileTmp:/compileTmp
+      - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/thingProjectImg:/thingProjectImg
+      - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/errorReportImg:/errorReportImg
+      - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/profileImg:/profileImg
     ports:
       - "127.0.0.1:10000:10000"
     networks: [web]
@@ -76,13 +79,3 @@ services:
 
 networks:
   web:
-
-volumes:
-  main_compile:
-  main_project_images:
-  main_error_images:
-  main_profile_images:
-  admin_compile:
-  admin_project_images:
-  admin_error_images:
-  admin_profile_images:

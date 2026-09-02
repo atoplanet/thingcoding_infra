@@ -15,7 +15,13 @@ Oracle Linux 단일 서버용 운영 구성입니다.
 /home/opc/work/
 ├── thingcoding_infra/
 ├── thingcoding_main/
-└── thingcoding_manage/
+├── thingcoding_manage/
+├── wallet/
+└── static_resource/
+    ├── compileTmp/
+    ├── thingProjectImg/
+    ├── errorReportImg/
+    └── profileImg/
 ```
 
 DNS의 세 도메인 A 레코드가 서버 공인 IP를 가리키는지 확인하고 Oracle Cloud 보안 목록/NSG와 서버 방화벽에서 TCP 80, 443을 허용합니다.
@@ -31,6 +37,12 @@ chmod +x scripts/*.sh
 ```
 
 `.env`에는 실제 이메일과 DB 접속 정보를 입력해야 합니다. Oracle Wallet을 사용한다면 기본 경로는 `/home/opc/work/wallet`이며 `WALLET_PATH`로 변경할 수 있습니다.
+
+컴파일 임시 파일과 업로드 이미지는 기본적으로 `/home/opc/work/static_resource`에 저장되며 `STATIC_RESOURCE_PATH`로 변경할 수 있습니다. 배포 전에 다음 디렉터리를 생성합니다.
+
+```bash
+mkdir -p /home/opc/work/static_resource/{compileTmp,thingProjectImg,errorReportImg,profileImg}
+```
 
 상세 문서:
 
