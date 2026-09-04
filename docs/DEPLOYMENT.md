@@ -50,6 +50,18 @@ HTTP 요청은 `301`과 HTTPS 주소를 반환해야 합니다. HTTPS 요청은 
 
 ## 문제 해결
 
+### 인증서가 있는데 없다고 표시되는 경우
+
+Certbot이 생성한 `live`와 `archive` 디렉터리는 root 소유여서 `opc`의 일반 파일 검사가 실패할 수 있습니다. `deploy.sh`는 `sudo test -f`로 인증서를 확인하며, sudo 인증 실패는 별도 오류로 안내합니다. 배포 전체를 sudo로 실행할 필요는 없습니다.
+
+```bash
+sudo test -f certbot/conf/live/thing.qook.io/fullchain.pem && echo "인증서 존재"
+```
+
+인증서가 존재하면 재발급하거나 개인키 권한을 완화하지 말고, 수정된 배포 스크립트로 재시도합니다.
+
+### 기타 점검
+
 인증서 발급 실패 시 DNS와 80 포트부터 확인합니다.
 
 ```bash
