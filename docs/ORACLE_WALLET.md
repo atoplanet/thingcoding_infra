@@ -45,8 +45,8 @@ ORACLE_SERVICE_NAME=o14d0nm3uo1d4iud_medium
 DB_USERNAME=thing
 DB_PASSWORD=replace-with-a-real-password
 WALLET_PATH=/home/opc/work/wallet
-MAIN_JAVA_OPTS=-Xms128m -Xmx256m -XX:+UseSerialGC
-ADMIN_JAVA_OPTS=-Xms128m -Xmx256m -XX:+UseSerialGC
+MAIN_JAVA_OPTS=-Xms128m -Xmx320m -XX:MaxMetaspaceSize=128m -Xss256k -XX:+UseSerialGC
+ADMIN_JAVA_OPTS=-Xms32m -Xmx128m -XX:MaxMetaspaceSize=96m -Xss256k -XX:+UseSerialGC
 ```
 
 `ORACLE_SERVICE_NAME`은 `tnsnames.ora` 왼쪽에 정의된 별칭과 정확히 같아야 합니다. 비밀번호에 `#`, 공백 또는 따옴표가 들어가면 Compose의 dotenv 문법에 맞게 큰따옴표로 감싸십시오.

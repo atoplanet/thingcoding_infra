@@ -14,7 +14,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       WALLET_DIR: /app/wallet
       SPRING_DATASOURCE_URL: jdbc:oracle:thin:@${ORACLE_SERVICE_NAME}?TNS_ADMIN=/app/wallet
-      JAVA_TOOL_OPTIONS: ${MAIN_JAVA_OPTS:--Xms128m -Xmx256m -XX:+UseSerialGC}
+      JAVA_TOOL_OPTIONS: ${MAIN_JAVA_OPTS:--Xms128m -Xmx320m -XX:MaxMetaspaceSize=128m -Xss256k -XX:+UseSerialGC}
+    mem_limit: 500m
     volumes:
       - ${WALLET_PATH:-/home/opc/work/wallet}:/app/wallet:ro
       - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/compileTmp:/compileTmp
@@ -42,7 +43,8 @@ services:
       JPA_DDL_AUTO: none
       JPA_GENERATE_DDL: "false"
       JPA_SHOW_SQL: "false"
-      JAVA_TOOL_OPTIONS: ${ADMIN_JAVA_OPTS:--Xms128m -Xmx256m -XX:+UseSerialGC}
+      JAVA_TOOL_OPTIONS: ${ADMIN_JAVA_OPTS:--Xms32m -Xmx128m -XX:MaxMetaspaceSize=96m -Xss256k -XX:+UseSerialGC}
+    mem_limit: 256m
     volumes:
       - ${WALLET_PATH:-/home/opc/work/wallet}:/app/wallet:ro
       - ${STATIC_RESOURCE_PATH:-/home/opc/work/static_resource}/compileTmp:/compileTmp

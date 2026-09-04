@@ -65,4 +65,4 @@ DB 연결 실패 시 다음 항목을 확인합니다.
 - Wallet 파일 권한 및 경로
 - 서버에서 Oracle Cloud DB로 나가는 HTTPS/TCPS 연결이 허용되는지
 
-메모리가 부족하면 `free -h`, `docker stats`로 확인합니다. 빌드는 순차 실행되고 각 앱 JVM 힙은 기본 256MB로 제한되어 있습니다.
+메모리가 부족하면 `free -h`, `docker stats`로 확인합니다. 빌드는 순차 실행됩니다. 주 서비스인 `main`은 최대 힙 320MB와 컨테이너 상한 500MB, 사용 빈도가 낮은 `admin`은 최대 힙 128MB와 컨테이너 상한 256MB입니다. 나머지 메모리는 OS, Docker, Nginx 및 Certbot이 사용합니다.
